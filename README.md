@@ -37,30 +37,6 @@ Key Capabilities
   - Health check endpoint for hosting platforms
   - Environment-based configuration (no hardcoding)
 
-Architecture Overview
-┌──────────────┐
-│  Frontend    │  SvelteKit + Tailwind
-│  (Analyst UI)│
-└──────┬───────┘
-       │ REST API
-┌──────▼───────┐
-│  FastAPI     │
-│  Backend     │
-├──────────────┤
-│ Decision     │  Thresholds, severity, rationale
-│ Engine       │
-├──────────────┤
-│ ML Pipeline  │
-│  - LightGBM  │  Fraud probability
-│  - IForest   │  Anomaly score
-│  - SHAP      │  Explainability (selective)
-└──────┬───────┘
-       │
-┌──────▼───────┐
-│ PostgreSQL   │
-│ Transactions │
-└──────────────┘
-
 Machine Learning Stack
 - Fraud Classifier: LightGBM (binary classification)
 - Anomaly Detection: Isolation Forest
@@ -84,24 +60,6 @@ SHAP Explainability Design
 Example:
 “Transaction amount unusually high compared to user history (+2.02 risk)”
 
-Project Structure
-backend/
- ├── app/
- │   ├── api/            # REST endpoints
- │   ├── db/             # ORM + database setup
- │   ├── ml/             # Models, pipeline, explainability
- │   ├── services/       # Ingestion, metrics, alerts
- │   └── main.py         # FastAPI app entry
- ├── requirements.txt
- └── .env.example
-
-frontend/
- ├── src/
- │   ├── routes/         # Dashboard, alerts, transaction review
- │   ├── lib/api/        # Typed API clients
- │   └── app.css
- └── svelte.config.js
-
 Environment Configuration
 - All sensitive or environment-specific values are injected via .env.
 
@@ -115,3 +73,4 @@ Future Improvements
 Author
 Aryan Kathpalia
 Machine Learning & Systems Engineering
+
