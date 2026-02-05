@@ -1,7 +1,8 @@
 import joblib
 import numpy as np
 from pathlib import Path
-from sklearn.ensemble import IsolationForest
+import os
+
 
 IF_FEATURES = [
     "TransactionAmt",
@@ -11,20 +12,41 @@ IF_FEATURES = [
     "D1", "D2", "D4", "D10",
 ]
 
-ARTIFACT_PATH = Path("app/ml/ieee/artifacts/isolation_forest.joblib")
-
 
 class AnomalyScorer:
+    """
+    Lazy-loaded Isolation Forest scorer.
+    App will NOT crash if model is missing at startup.
+    """
+
     def __init__(self):
-        if not ARTIFACT_PATH.exists():
-            raise RuntimeError("Isolation Forest model not found")
-        self.model = joblib.load(ARTIFACT_PATH)
+        self.model = None
+
+        ml_dir = Path(__file__).resolve().parent
+        self.model_path = ml_dir / os.getenv(
+            "IF_MODEL_PATH",
+            "ieee/artifacts/isolation_forest.joblib",
+        )
+
+    def _load_model(self):
+        if self.model is not None:
+            return
+
+        if not self.model_path.exists():
+            raise RuntimeError(
+                f"Isolation Forest model not found at {self.model_path}. "
+                f"Upload artifact or disable anomaly scoring."
+            )
+
+        self.model = joblib.load(self.model_path)
 
     def score(self, tx) -> float:
         """
         Returns anomaly score in [0, 1]
         Higher = more anomalous
         """
+        self._load_model()
+
         x = np.array([
             getattr(tx, f, 0.0) or 0.0
             for f in IF_FEATURES
