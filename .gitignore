@@ -1,0 +1,71 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+.env
+
+# Node / Svelte
+frontend/node_modules/
+frontend/.svelte-kit/
+frontend/build/
+
+# Editor
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+
+# ML artifacts & data (DO NOT COMMIT)
+backend/app/ml/artifacts/
+backend/app/ml/ieee/artifacts/
+backend/app/ml/offline/outputs/
+backend/app/data/
+*.joblib
+*.csv
+*.json
+
+# Python
+venv/
+__pycache__/
+.env
+
+# Node
+frontend/node_modules/
+frontend/.svelte-kit/
+frontend/build/
+
+
+# ===== GLOBAL =====
+.DS_Store
+.vscode/
+*.log
+
+# ===== ENV =====
+.env
+.env.*
+
+# ===== PYTHON =====
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env/
+
+# ===== NODE =====
+node_modules/
+.svelte-kit/
+dist/
+
+# ===== ML / DATA (DO NOT COMMIT) =====
+**/data/
+**/artifacts/
+**/outputs/
+*.joblib
+*.pkl
+*.csv
+
+# ===== OS =====
+Thumbs.db
