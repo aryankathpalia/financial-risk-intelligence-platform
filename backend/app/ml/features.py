@@ -2,36 +2,37 @@ from pathlib import Path
 import pandas as pd
 import joblib
 import numpy as np
+import os
 
-
-# Artifact paths
 ML_DIR = Path(__file__).resolve().parent
 ARTIFACT_DIR = ML_DIR / "ieee" / "artifacts"
 
-import os
-
 FEATURES_PATH = ARTIFACT_DIR / os.getenv(
     "FEATURES_PATH",
-    "ieee/artifacts/features_lgbm.joblib",
+    "features_lgbm.joblib",
 )
 
+_FEATURE_COLUMNS = None
 
 
-if not FEATURES_PATH.exists():
-    raise FileNotFoundError(f"Missing features file: {FEATURES_PATH}")
+def _load_feature_columns():
+    global _FEATURE_COLUMNS
 
-FEATURE_COLUMNS = joblib.load(FEATURES_PATH)
+    if _FEATURE_COLUMNS is not None:
+        return _FEATURE_COLUMNS
+
+    if not FEATURES_PATH.exists():
+        raise RuntimeError(
+            f"Feature artifacts missing at {FEATURES_PATH}. "
+            "ML inference is disabled."
+        )
+
+    _FEATURE_COLUMNS = joblib.load(FEATURES_PATH)
+    return _FEATURE_COLUMNS
 
 
-
-# Feature builder (INFERENCE-SAFE)
 def build_features(tx):
-    """
-    Build IEEE features EXACTLY matching training contract.
-    - No feature creation
-    - No category learning
-    - Strict numeric coercion (LightGBM-safe)
-    """
+    feature_columns = _load_feature_columns()
 
     row = {
         "TransactionAmt": tx.TransactionAmt,
@@ -49,24 +50,15 @@ def build_features(tx):
         key = f"id_{i:02d}"
         row[key] = getattr(tx, key)
 
-    # Single-row DataFrame
     df = pd.DataFrame([row])
 
-    # Sanitize column names (must match training)
     df.columns = df.columns.str.replace(
         r"[^A-Za-z0-9_]", "_", regex=True
     )
 
-    # Align to training feature contract
-    X = df.reindex(columns=FEATURE_COLUMNS, fill_value=0)
-
-    # CRITICAL STEP: FORCE NUMERIC TYPES
+    X = df.reindex(columns=feature_columns, fill_value=0)
     X = X.apply(pd.to_numeric, errors="coerce")
-
-    # Replace NaN / inf with 0
     X = X.replace([np.inf, -np.inf], np.nan).fillna(0.0)
-
-    # LightGBM prefers float32
     X = X.astype("float32")
 
     return X
