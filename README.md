@@ -70,7 +70,9 @@ Future Improvements
 - Analyst feedback loop for retraining
 - Alert escalation workflows
 
+
 Author
-Aryan Kathpalia
-Machine Learning & Systems Engineering
+- Aryan Kathpalia
+- Machine Learning & Systems Engineering
+
 
