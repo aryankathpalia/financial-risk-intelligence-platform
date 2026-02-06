@@ -41,11 +41,7 @@ import os
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "https://financial-risk-intelligence-platform-mu.vercel.app",
-        "https://financial-risk-intelligence-platform-bk11-asw1196g.vercel.app",
-    ],
+    allow_origin_regex=r"https://financial-risk-intelligence-platform-.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
