@@ -18,3 +18,8 @@ venv/
 
 # Data (your ML datasets)
 backend/app/data/
+
+
+# ML datasets (DO NOT COMMIT)
+backend/app/data/ieee/
+*.csv
