@@ -27,7 +27,7 @@ from app.api import health
                   
 # DB init
                   
-# Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Financial Risk Intelligence API",
