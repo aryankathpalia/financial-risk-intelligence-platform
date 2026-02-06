@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
+  const API = import.meta.env.VITE_API_BASE_URL;
+
   let offline: any = null;
   let online: any = null;
   let loading = true;
@@ -9,8 +11,8 @@
   onMount(async () => {
     try {
       const [offlineRes, onlineRes] = await Promise.all([
-        fetch("http://127.0.0.1:8000/api/models/offline-metrics"),
-        fetch("http://127.0.0.1:8000/api/models/online-stats")
+        fetch(`${API}/api/models/offline-metrics`),
+        fetch(`${API}/api/models/online-stats`)
       ]);
 
       if (!offlineRes.ok || !onlineRes.ok) {
@@ -19,13 +21,14 @@
 
       offline = await offlineRes.json();
       online = await onlineRes.json();
-    } catch (e) {
+    } catch {
       error = "Unable to load model metrics";
     } finally {
       loading = false;
     }
   });
 </script>
+
 
 <section class="min-h-screen bg-slate-950 p-4 text-slate-100">
   <div class="rounded-2xl bg-slate-900/95 p-6 space-y-8">

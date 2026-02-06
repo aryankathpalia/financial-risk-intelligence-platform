@@ -37,16 +37,21 @@ app = FastAPI(
                   
 # CORS
                   
+import os
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "https://financial-risk-intelligence-platform-hhp9-fguw9xc2n.vercel.app",
+        "https://financial-risk-intelligence-platform-eta.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
                   
 # Routers (ONLY real API routers)

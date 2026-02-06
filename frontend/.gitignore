@@ -1,6 +1,20 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Env files
 .env
-venv/
+.env.*
+
+# Build outputs
+.svelte-kit/
+.build/
+dist/
+
+# Python
 __pycache__/
-app/ml/artifacts/
-app/ml/ieee/artifacts/
-app/ml/offline/outputs/
+*.pyc
+venv/
+
+# Data (your ML datasets)
+backend/app/data/

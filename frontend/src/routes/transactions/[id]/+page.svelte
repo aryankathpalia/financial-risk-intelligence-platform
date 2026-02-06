@@ -50,7 +50,8 @@ type TransactionDetail = {
       error = null;
       transaction = null;
 
-      fetch(`http://127.0.0.1:8000/api/transactions/${id}`)
+        const API = import.meta.env.VITE_API_BASE_URL;
+        fetch(`${API}/api/transactions/${id}`)
         .then((res) => {
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           return res.json();
