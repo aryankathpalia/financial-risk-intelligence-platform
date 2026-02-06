@@ -82,6 +82,9 @@ backend/app/data/synthetic_dataset/
 !backend/app/data/ieee/
 
 # Allow SMALL test CSVs only
-!backend/app/data/ieee/*.csv
+# NEVER commit IEEE raw CSVs (too large)
+backend/app/data/ieee/*.csv
+
+
 
 backend/data_raw/
