@@ -29,7 +29,7 @@ def start_ingestion(
                 "D1",
                 "DeviceType",
                 "DeviceInfo"
-            FROM ieee_raw_transactions
+            FROM railway.ieee_raw_transactions
             ORDER BY ingested_at ASC
             LIMIT :limit
         """),
