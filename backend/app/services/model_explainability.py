@@ -3,7 +3,8 @@ import pandas as pd
 from sklearn.inspection import permutation_importance
 
 from app.ml.risk_model import RiskModel
-from app.db.session import SessionLocal
+from app.db.database import SessionLocal
+
 from app.db.models.transaction import Transaction
 from app.ml.features import TransactionFeatures
 

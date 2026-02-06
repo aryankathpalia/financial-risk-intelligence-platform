@@ -7,7 +7,22 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise RuntimeError("DATABASE_URL not set")
 
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(
+    DATABASE_URL,
+
+ 
+    pool_size=1,              # ONE connection
+    max_overflow=0,           # no extra connections
+    pool_pre_ping=True,       
+    pool_recycle=180,         
+
+    connect_args={
+        "sslmode": "require",
+        "connect_timeout": 5,
+    },
+)
+
+
 
 SessionLocal = sessionmaker(
     autocommit=False,

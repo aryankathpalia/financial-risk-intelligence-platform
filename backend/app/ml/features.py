@@ -4,31 +4,21 @@ import joblib
 import numpy as np
 import os
 
-ML_DIR = Path(__file__).resolve().parent
-ARTIFACT_DIR = ML_DIR / "ieee" / "artifacts"
 
-FEATURES_PATH = ARTIFACT_DIR / os.getenv(
-    "FEATURES_PATH",
-    "features_lgbm.joblib",
-)
+BASE_DIR = Path(__file__).resolve().parents[2]  # backend/
+ARTIFACT_DIR = BASE_DIR / "app" / "ml" / "ieee" / "artifacts"
 
-_FEATURE_COLUMNS = None
+FEATURES_PATH = ARTIFACT_DIR / "features_lgbm.joblib"
 
 
 def _load_feature_columns():
-    global _FEATURE_COLUMNS
-
-    if _FEATURE_COLUMNS is not None:
-        return _FEATURE_COLUMNS
-
     if not FEATURES_PATH.exists():
         raise RuntimeError(
-            f"Feature artifacts missing at {FEATURES_PATH}. "
-            "ML inference is disabled."
+            f"Feature artifacts missing at {FEATURES_PATH}"
         )
+    return joblib.load(FEATURES_PATH)
 
-    _FEATURE_COLUMNS = joblib.load(FEATURES_PATH)
-    return _FEATURE_COLUMNS
+
 
 
 def build_features(tx):

@@ -1,7 +1,8 @@
 import joblib
 import numpy as np
 from sklearn.ensemble import IsolationForest
-from app.db.session import SessionLocal
+from app.db.database import SessionLocal
+
 from app.db.models.transaction import Transaction
 from app.ml.anomaly.isolation_forest import IF_FEATURES, ARTIFACT_PATH
 

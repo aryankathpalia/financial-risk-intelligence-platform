@@ -105,6 +105,10 @@
     selectedAlert = alerts.length ? alerts[0] : null;
 
     transaction = null;
+
+    if (selectedAlert) {
+  loadAlertDetails(selectedAlert);
+}
   }
 
   function formatAnomaly(score: number | null) {

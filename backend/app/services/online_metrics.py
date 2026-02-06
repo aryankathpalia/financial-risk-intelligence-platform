@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from app.db.session import SessionLocal
+from app.db.database import SessionLocal
+
 from app.db.models.transaction import Transaction
 
 

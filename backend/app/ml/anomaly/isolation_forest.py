@@ -22,7 +22,7 @@ class AnomalyScorer:
     def __init__(self):
         self.model = None
 
-        ml_dir = Path(__file__).resolve().parent
+        ml_dir = Path(__file__).resolve().parents[1] 
         self.model_path = ml_dir / os.getenv(
             "IF_MODEL_PATH",
             "ieee/artifacts/isolation_forest.joblib",

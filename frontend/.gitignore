@@ -4,4 +4,3 @@ __pycache__/
 app/ml/artifacts/
 app/ml/ieee/artifacts/
 app/ml/offline/outputs/
-app/data/

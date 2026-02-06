@@ -21,7 +21,6 @@ Thumbs.db
 backend/app/ml/artifacts/
 backend/app/ml/ieee/artifacts/
 backend/app/ml/offline/outputs/
-backend/app/data/
 *.joblib
 *.csv
 *.json
@@ -60,7 +59,6 @@ node_modules/
 dist/
 
 # ===== ML / DATA (DO NOT COMMIT) =====
-**/data/
 **/artifacts/
 **/outputs/
 *.joblib
@@ -69,3 +67,21 @@ dist/
 
 # ===== OS =====
 Thumbs.db
+
+
+# ===== DATA POLICY =====
+# Ignore raw & large datasets
+backend/app/data/raw/
+backend/app/data/synthetic_dataset/
+
+# Allow loaders & code
+!backend/app/data/__init__.py
+!backend/app/data/*.py
+!backend/app/data/ieee_loader.py
+!backend/app/data/loaders/
+!backend/app/data/ieee/
+
+# Allow SMALL test CSVs only
+!backend/app/data/ieee/*.csv
+
+backend/data_raw/

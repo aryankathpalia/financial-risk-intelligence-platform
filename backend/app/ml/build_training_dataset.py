@@ -5,7 +5,8 @@ import pandas as pd
 import joblib
 from pathlib import Path
 
-from app.db.session import SessionLocal
+from app.db.database import SessionLocal
+
 from app.db.models.transaction import Transaction
 
 ARTIFACT_DIR = Path("app/ml/artifacts")
