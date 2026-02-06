@@ -5,7 +5,7 @@ from sqlalchemy import func, case
 from app.db.deps import get_db
 from app.db.models.transaction import Transaction
 
-router = APIRouter(prefix="/analytics", tags=["Analytics"])
+router = APIRouter(tags=["Analytics"])
 
 
 @router.get("/score-distribution")

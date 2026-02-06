@@ -8,25 +8,29 @@ from app.db.models.transaction import Transaction
 def get_online_model_stats():
     db: Session = SessionLocal()
 
-    total = db.query(func.count(Transaction.id)).scalar() or 1
-
-    allow = db.query(func.count(Transaction.id)) \
-        .filter(Transaction.decision == "ALLOW") \
-        .scalar()
-
-    review = db.query(func.count(Transaction.id)) \
-        .filter(Transaction.decision == "REVIEW") \
-        .scalar()
-
-    block = db.query(func.count(Transaction.id)) \
-        .filter(Transaction.decision == "BLOCK") \
-        .scalar()
+    rows = (
+        db.query(
+            Transaction.decision,
+            func.count(Transaction.id)
+        )
+        .group_by(Transaction.decision)
+        .all()
+    )
 
     db.close()
 
+    counts = {"ALLOW": 0, "REVIEW": 0, "BLOCK": 0}
+    total = 0
+
+    for decision, count in rows:
+        counts[decision] = count
+        total += count
+
+    total = total or 1  # prevent division by zero
+
     return {
         "total": total,
-        "allow_pct": round(allow / total * 100, 2),
-        "review_pct": round(review / total * 100, 2),
-        "block_pct": round(block / total * 100, 2),
+        "allow_pct": round(counts["ALLOW"] / total * 100, 2),
+        "review_pct": round(counts["REVIEW"] / total * 100, 2),
+        "block_pct": round(counts["BLOCK"] / total * 100, 2),
     }

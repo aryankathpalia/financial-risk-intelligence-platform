@@ -2,7 +2,9 @@ import json
 from pathlib import Path
 
 OFFLINE_DIR = Path("app/ml/offline")
-CACHE_PATH = OFFLINE_DIR / "ieee_offline_metrics.json"
+BASE_DIR = Path(__file__).resolve().parent
+CACHE_PATH = BASE_DIR / "ieee_offline_metrics.json"
+
 
 
 def load_cached_offline_metrics():

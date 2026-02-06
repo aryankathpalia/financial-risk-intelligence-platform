@@ -4,7 +4,7 @@ from fastapi import APIRouter
 from app.services.online_metrics import get_online_model_stats
 from app.ml.offline.ieee_offline_metrics import load_cached_offline_metrics
 
-router = APIRouter(prefix="/api/models", tags=["Models"])
+router = APIRouter(prefix="/models", tags=["Models"])
 
 
 @router.get("/offline-metrics")

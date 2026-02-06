@@ -25,7 +25,7 @@ class ResolveAlertPayload(BaseModel):
     reason: str | None = None
 
 
-@router.get("/")
+@router.get("")
 def get_alerts(db: Session = Depends(get_db)):
     txs = (
         db.query(Transaction)
