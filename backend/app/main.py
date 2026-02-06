@@ -55,15 +55,6 @@ app.add_middleware(
 )
 
 
-from fastapi import Request
-from fastapi.responses import Response
-
-@app.middleware("http")
-async def allow_preflight(request: Request, call_next):
-    if request.method == "OPTIONS":
-        return Response(status_code=200)
-    return await call_next(request)
-
                   
 # Routers (ONLY real API routers)
                   
