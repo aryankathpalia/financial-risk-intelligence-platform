@@ -42,16 +42,27 @@ import os
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "https://financial-risk-intelligence-platform-hhp9-fguw9xc2n.vercel.app",
-        "https://financial-risk-intelligence-platform-eta.vercel.app",
-    ],
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://financial-risk-intelligence-platform-hhp9-fguw9xc2n.vercel.app",
+    "https://financial-risk-intelligence-platform-eta.vercel.app",
+    "https://financial-risk-intelligence-platform-mu.vercel.app",
+],
+
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+
+from fastapi import Request
+from fastapi.responses import Response
+
+@app.middleware("http")
+async def allow_preflight(request: Request, call_next):
+    if request.method == "OPTIONS":
+        return Response(status_code=200)
+    return await call_next(request)
 
                   
 # Routers (ONLY real API routers)
@@ -98,4 +109,10 @@ app.include_router(health.router)
 
 
 app.include_router(models.router)
-app.include_router(analytics_router)
+
+app.include_router(
+    analytics_router,
+    prefix="/api/analytics",
+    tags=["Analytics"]
+)
+
