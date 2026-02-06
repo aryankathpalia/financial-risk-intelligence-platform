@@ -1,3 +1,4 @@
+// frontend/src/lib/api/analytics.ts
 import { apiFetch } from "./client";
 
 export interface ScoreDistributionResponse {
@@ -5,5 +6,5 @@ export interface ScoreDistributionResponse {
 }
 
 export function fetchScoreDistribution(): Promise<ScoreDistributionResponse> {
-  return apiFetch("/analytics/score-distribution");
+  return apiFetch("/api/analytics/score-distribution");
 }
