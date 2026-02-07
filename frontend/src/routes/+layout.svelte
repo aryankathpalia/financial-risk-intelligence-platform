@@ -8,7 +8,12 @@
     { label: 'Alerts', href: '/alerts' },
     { label: 'Models', href: '/models' }
   ];
+
+  
 </script>
+
+
+
 
 <div class="min-h-screen bg-slate-950 text-slate-100 flex">
 
@@ -32,6 +37,7 @@
       {#each nav as item}
       <a
   href={item.href}
+  data-sveltekit-preload-data="hover"
   class={
     `relative block px-4 py-2 rounded-md text-sm transition ${
       $page.url.pathname.startsWith(item.href)
@@ -42,6 +48,7 @@
 >
   {item.label}
 </a>
+
 
       {/each}
     </nav>
