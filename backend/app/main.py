@@ -13,6 +13,7 @@ from app.db.models import transaction
 from app.api.ingestion import router as ingestion_router
 from app.api.analytics import router as analytics_router
 from app.api import models
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from app.api import (
     scoring,
@@ -38,6 +39,13 @@ app = FastAPI(
 # CORS
                   
 import os
+
+
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=["*"]
+)
+
 
 app.add_middleware(
     CORSMiddleware,

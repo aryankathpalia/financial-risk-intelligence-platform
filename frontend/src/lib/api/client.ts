@@ -1,20 +1,11 @@
-let BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const RAW_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-if (!BASE_URL) {
+if (!RAW_BASE_URL) {
   throw new Error("VITE_API_BASE_URL is not defined");
 }
 
-// Force HTTPS even if env is poisoned
-if (BASE_URL.startsWith("http://")) {
-  BASE_URL = BASE_URL.replace("http://", "https://");
-}
-
-
-
-if (!BASE_URL) {
-  throw new Error("VITE_API_BASE_URL is not defined");
-}
-
+// FORCE HTTPS EVEN IF ENV IS WRONG
+const BASE_URL = RAW_BASE_URL.replace(/^http:\/\//, "https://");
 
 export async function apiFetch<T>(
   path: string,

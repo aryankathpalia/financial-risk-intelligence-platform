@@ -15,7 +15,7 @@ def decision_to_severity(decision: str) -> str:
     }.get(decision, "low")
 
 
-@router.get("/")
+@router.get("", include_in_schema=True)
 def list_transactions(
     db: Session = Depends(get_db),
     page: int = 1,
