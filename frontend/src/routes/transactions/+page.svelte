@@ -30,7 +30,8 @@
       transactions = res.items;
       total = res.total;
     } catch (e) {
-      error = "Failed to load transactions";
+      console.error("Transactions fetch failed:", e);
+      error = e instanceof Error ? e.message : "Failed to load transactions";
     } finally {
       loading = false;
     }
