@@ -1,8 +1,7 @@
 .env
 venv/
 __pycache__/
-app/ml/artifacts/
-app/ml/ieee/artifacts/
+
 app/ml/offline/outputs/
 app/data/raw/
 app/data/synthetic_dataset/

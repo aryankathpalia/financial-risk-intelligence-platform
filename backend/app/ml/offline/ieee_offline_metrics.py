@@ -3,7 +3,8 @@ from pathlib import Path
 
 OFFLINE_DIR = Path("app/ml/offline")
 BASE_DIR = Path(__file__).resolve().parent
-CACHE_PATH = BASE_DIR / "ieee_offline_metrics.json"
+CACHE_PATH = Path(__file__).parent / "ieee_offline_metrics.json"
+
 
 
 

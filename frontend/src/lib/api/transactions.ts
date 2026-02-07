@@ -5,12 +5,11 @@ export interface Transaction {
   user_id: string;
   amount: number;
   merchant: string;
-  country: string;
-  created_at: string;
-
+  ingested_at: string;
   fraud_prob: number;
   anomaly_score: number;
   decision: "ALLOW" | "REVIEW" | "BLOCK";
+  severity: "low" | "medium" | "high";
 }
 
 // ----------------------------------

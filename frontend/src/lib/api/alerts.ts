@@ -6,7 +6,7 @@ export interface Alert {
   id: string;
   transaction_id: string;
   user_id: string;
-  risk_score: number;
+  fraud_prob: number;
   severity: "low" | "medium" | "high";
   status: "pending" | "resolved";
   created_at: string;

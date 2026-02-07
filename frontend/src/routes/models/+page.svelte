@@ -47,7 +47,13 @@
     {:else if error}
       <p class="text-rose-400">{error}</p>
 
+    {:else if offline?.status === "missing"}
+  <p class="text-amber-400">
+    Offline metrics not generated yet.
+  </p>
+
     {:else}
+
 
     <!-- OFFLINE EVALUATION -->
     <section class="rounded-xl bg-slate-800 p-5 space-y-6">
@@ -117,7 +123,7 @@
         </p>
 
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {#each Object.entries(offline.score_distribution) as [k, v]}
+          {#each Object.entries(offline.score_distribution ?? {}) as [k, v]}
             <div class="rounded-lg bg-slate-900 p-3">
               <p class="text-xs text-slate-400 uppercase">{k}</p>
               <p class="mt-1 font-semibold">{v}</p>
