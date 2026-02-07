@@ -1,0 +1,133 @@
+{
+  "model": "LightGBM (IEEE + Identity)",
+  "evaluation_type": "Offline validation (IEEE)",
+  "dataset": "IEEE-CIS Fraud Detection",
+  "validation_split": 0.2,
+  "roc_auc": 0.9848,
+  "operating_point": {
+    "threshold": 0.3,
+    "recall": 0.9524,
+    "fpr": 0.012
+  },
+  "threshold_sweep": [
+    {
+      "threshold": 0.1,
+      "recall": 0.9524,
+      "fpr": 0.0964
+    },
+    {
+      "threshold": 0.2,
+      "recall": 0.9524,
+      "fpr": 0.0301
+    },
+    {
+      "threshold": 0.3,
+      "recall": 0.9524,
+      "fpr": 0.012
+    },
+    {
+      "threshold": 0.4,
+      "recall": 0.9524,
+      "fpr": 0.012
+    },
+    {
+      "threshold": 0.5,
+      "recall": 0.9524,
+      "fpr": 0.006
+    },
+    {
+      "threshold": 0.6,
+      "recall": 0.9048,
+      "fpr": 0.0
+    },
+    {
+      "threshold": 0.7,
+      "recall": 0.8571,
+      "fpr": 0.0
+    },
+    {
+      "threshold": 0.8,
+      "recall": 0.8571,
+      "fpr": 0.0
+    },
+    {
+      "threshold": 0.9,
+      "recall": 0.7619,
+      "fpr": 0.0
+    }
+  ],
+  "score_distribution": {
+    "mean": 0.1257,
+    "p50": 0.0081,
+    "p90": 0.5799,
+    "p95": 0.9505,
+    "p99": 0.9846
+  },
+  "feature_importance": [
+    {
+      "feature": "TransactionAmt",
+      "gain": 4236.92
+    },
+    {
+      "feature": "C2",
+      "gain": 2247.69
+    },
+    {
+      "feature": "C1",
+      "gain": 1704.9
+    },
+    {
+      "feature": "id_30_Android_7_1_1",
+      "gain": 686.4
+    },
+    {
+      "feature": "card1",
+      "gain": 534.35
+    },
+    {
+      "feature": "id_26",
+      "gain": 458.95
+    },
+    {
+      "feature": "id_05",
+      "gain": 396.79
+    },
+    {
+      "feature": "id_06",
+      "gain": 388.01
+    },
+    {
+      "feature": "addr1",
+      "gain": 364.9
+    },
+    {
+      "feature": "id_02",
+      "gain": 318.99
+    },
+    {
+      "feature": "id_30_iOS_11_2_5",
+      "gain": 300.17
+    },
+    {
+      "feature": "id_12_NotFound",
+      "gain": 295.33
+    },
+    {
+      "feature": "id_20",
+      "gain": 282.79
+    },
+    {
+      "feature": "D1",
+      "gain": 261.09
+    },
+    {
+      "feature": "id_07",
+      "gain": 239.48
+    }
+  ],
+  "notes": [
+    "Metrics computed on validation split only",
+    "Identity features included",
+    "Static until retraining"
+  ]
+}
