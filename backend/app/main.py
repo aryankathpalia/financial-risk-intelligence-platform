@@ -41,6 +41,9 @@ import os
 
 app.add_middleware(
     CORSMiddleware,
+    allow_origins=[
+        "https://financial-risk-intelligence-platform.vercel.app",
+    ],
     allow_origin_regex=r"https://financial-risk-intelligence-platform-.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
@@ -90,10 +93,18 @@ app.include_router(
 )
 
 
-app.include_router(health.router)
+app.include_router(
+    health.router,
+    prefix="/api/health",
+    tags=["Health"]
+)
 
+app.include_router(
+    models.router,
+    prefix="/api/models",
+    tags=["Models"]
+)
 
-app.include_router(models.router)
 
 app.include_router(
     analytics_router,
