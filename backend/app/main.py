@@ -50,14 +50,14 @@ app.add_middleware(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://financial-risk-intelligence-platform.vercel.app",
+        "https://financial-risk-intelligence-platfor.vercel.app",
     ],
     allow_origin_regex=r"https://financial-risk-intelligence-platform-.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+ 
 
 
                   
