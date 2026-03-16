@@ -23,3 +23,4 @@ backend/app/data/
 # ML datasets (DO NOT COMMIT)
 backend/app/data/ieee/
 *.csv
+!backend/app/ml/offline/ieee_offline_metrics.json
