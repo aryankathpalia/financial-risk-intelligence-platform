@@ -221,6 +221,6 @@ function shapSummary(shapValues: ShapValue[]) {
     </span>
   </p>
 {/if}
-
+    </div>
     </div>
 </section>

@@ -68,7 +68,7 @@
                       ? 'bg-gradient-to-b from-sky-400 via-blue-500 to-indigo-500'
                       : 'bg-transparent'
                   }`}
-              />
+              ></span>
 
               <!-- Simple icon glyph (no external deps) -->
               <span
