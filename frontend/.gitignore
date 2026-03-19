@@ -1,0 +1,25 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Env files
+.env
+.env.*
+
+# Build outputs
+.svelte-kit/
+.build/
+dist/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Data (your ML datasets)
+backend/app/data/
+
+
+# ML datasets (DO NOT COMMIT)
+backend/app/data/ieee/
+*.csv

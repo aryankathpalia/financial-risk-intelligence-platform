@@ -1,0 +1,11 @@
+.env
+venv/
+__pycache__/
+
+app/ml/offline/outputs/
+app/data/raw/
+app/data/synthetic_dataset/
+
+# ML datasets (DO NOT COMMIT)
+backend/app/data/ieee/
+*.csv
