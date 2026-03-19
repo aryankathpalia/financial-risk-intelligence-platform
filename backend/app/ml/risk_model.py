@@ -6,12 +6,11 @@ import pandas as pd
 
 ARTIFACT_DIR = Path("app/ml/artifacts")
 
-# --------------------------------------------------
 # ANOMALY MODEL FEATURE CONTRACT
-# --------------------------------------------------
+
 # These MUST match EXACTLY what the Isolation Forest
 # is trained on (and only include raw, stable signals).
-# --------------------------------------------------
+
 
 ANOMALY_FEATURES = [
     "amount",

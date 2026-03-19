@@ -1,5 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
+  import SectionHeader from "$lib/ui/SectionHeader.svelte";
+  import Panel from "$lib/ui/Panel.svelte";
+  import Badge from "$lib/ui/Badge.svelte";
+  import Button from "$lib/ui/Button.svelte";
+  import DataTable from "$lib/ui/DataTable.svelte";
   import {
     fetchTransactions,
     type Transaction,
@@ -58,6 +64,12 @@
     return "Blocked";
   }
 
+  function decisionTone(tx: Transaction) {
+    if (tx.decision === "BLOCK") return "danger";
+    if (tx.decision === "REVIEW") return "warning";
+    return "success";
+  }
+
   /* ---------------------------
      PAGINATION
   --------------------------- */
@@ -80,145 +92,128 @@
 
 
 <section class="min-h-screen bg-slate-950 p-4 text-slate-100">
-  <div
-    class="min-h-[calc(100vh-2rem)] rounded-2xl
-           bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950
-           ring-1 ring-white/5 shadow-2xl"
-  >
-    <div class="p-6 space-y-6 rounded-2xl bg-slate-900/95">
+  <div class="min-h-[calc(100vh-2rem)] rounded-2xl bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 ring-1 ring-white/5 shadow-2xl">
+    <div class="p-6 space-y-6">
+      <SectionHeader
+        eyebrow="Investigate"
+        title="Transactions"
+        subtitle="Review transaction-level risk signals and drill into model explanations."
+      >
+        <svelte:fragment slot="actions">
+          <Button variant="soft" size="sm">
+            Export
+          </Button>
+        </svelte:fragment>
+      </SectionHeader>
 
-      <!-- HEADER -->
-      <header class="flex items-center justify-between">
-        <div>
-          <h1 class="text-2xl font-semibold tracking-tight">
-            Transactions
-          </h1>
-          <p class="text-sm text-slate-400 mt-1">
-            Review and investigate transaction-level risk signals
-          </p>
+      <Panel padding="lg" subtle>
+        <div class="flex flex-wrap items-center gap-2">
+          <Badge tone="neutral" size="sm">Status: All</Badge>
+          <Badge tone="neutral" size="sm">Risk: Any</Badge>
+          <Badge tone="neutral" size="sm">Date: Last 24h</Badge>
         </div>
-      </header>
+      </Panel>
 
-      <!-- FILTER BAR -->
-      <div class="flex flex-wrap items-center gap-3">
-        <div class="px-3 py-1.5 rounded-md bg-slate-800 text-xs text-slate-300">
-          Status: All
-        </div>
-        <div class="px-3 py-1.5 rounded-md bg-slate-800 text-xs text-slate-300">
-          Risk: Any
-        </div>
-        <div class="px-3 py-1.5 rounded-md bg-slate-800 text-xs text-slate-300">
-          Date: Last 24h
-        </div>
-      </div>
+      <Panel padding="lg">
+        {#if error}
+          <div class="rounded-lg bg-red-900/30 border border-red-800 p-4 text-red-300 text-sm mb-4">
+            {error}
+          </div>
+        {/if}
 
-      <!-- TABLE -->
-      <div class="rounded-xl bg-slate-800 overflow-hidden">
-        <table class="w-full text-sm">
-          <thead class="bg-slate-900 text-slate-400">
+        <DataTable maxHeight="520px">
+          <svelte:fragment slot="head">
             <tr>
-              <th class="px-4 py-3 text-left">Transaction</th>
-              <th class="px-4 py-3 text-left">User</th>
-              <th class="px-4 py-3 text-left">Risk Score</th>
-              <th class="px-4 py-3 text-left">Severity</th>
-              <th class="px-4 py-3 text-left">Status</th>
-              <th class="px-4 py-3 text-right">Action</th>
+              <th class="px-4 py-3 text-left font-medium">Transaction</th>
+              <th class="px-4 py-3 text-left font-medium">User</th>
+              <th class="px-4 py-3 text-left font-medium">Risk score</th>
+              <th class="px-4 py-3 text-left font-medium">Decision</th>
+              <th class="px-4 py-3 text-left font-medium">Status</th>
+              <th class="px-4 py-3 text-right font-medium">Action</th>
             </tr>
-          </thead>
+          </svelte:fragment>
 
-          <tbody class="divide-y divide-slate-700">
+          {#if loading}
+            <tr>
+              <td colspan="6" class="px-4 py-6 text-center text-slate-400">
+                Loading transactions…
+              </td>
+            </tr>
+          {:else if transactions.length === 0}
+            <tr>
+              <td colspan="6" class="px-4 py-6 text-center text-slate-400">
+                No transactions found.
+              </td>
+            </tr>
+          {:else}
             {#each transactions as tx}
-              <tr class="hover:bg-slate-700/40 transition">
-
-                <!-- Transaction ID -->
-                <td class="px-4 py-3 font-mono text-xs">
-                  {tx.id.slice(0, 8)}…
+              <tr class="hover:bg-slate-900/70 transition-colors">
+                <td class="px-4 py-3 font-mono text-xs text-slate-300">
+                  {tx.id}
                 </td>
-
-                <!-- User -->
-                <td class="px-4 py-3">
+                <td class="px-4 py-3 text-slate-300">
                   {tx.user_id}
                 </td>
-
-                <!-- Risk Score -->
-                <td class="px-4 py-3">
+                <td class="px-4 py-3 tabular-nums text-slate-50 font-semibold">
                   {riskPercent(tx)}%
                 </td>
-
-                <!-- Severity -->
                 <td class="px-4 py-3">
-                  <span
-                    class="px-2 py-0.5 rounded-full text-xs
-                      {severity(tx) === 'high'
-                        ? 'bg-rose-500/20 text-rose-400'
-                        : severity(tx) === 'medium'
-                        ? 'bg-amber-500/20 text-amber-400'
-                        : 'bg-emerald-500/20 text-emerald-400'}"
-                  >
-                    {severity(tx)}
-                  </span>
+                  <Badge tone={decisionTone(tx)} size="xs">
+                    {tx.decision}
+                  </Badge>
                 </td>
-
-                <!-- Status -->
                 <td class="px-4 py-3">
-                  <span
-                    class="px-2 py-0.5 rounded-full text-xs
-                      {status(tx) === 'Blocked'
-                        ? 'bg-rose-500/20 text-rose-400'
-                        : status(tx) === 'Needs Review'
-                        ? 'bg-amber-500/20 text-amber-400'
-                        : 'bg-emerald-500/20 text-emerald-400'}"
-                  >
+                  <Badge tone={decisionTone(tx)} size="xs">
                     {status(tx)}
-                  </span>
+                  </Badge>
                 </td>
-
-                <!-- Action -->
                 <td class="px-4 py-3 text-right">
-                  <a
-                    href={`/transactions/${tx.id}`}
-                    class="text-xs text-blue-400 hover:underline"
+                  <Button
+                    variant="soft"
+                    size="xs"
+                    on:click={() => {
+                      goto(`/transactions/${encodeURIComponent(tx.id)}`);
+                    }}
                   >
                     View
-                  </a>
+                  </Button>
                 </td>
-
               </tr>
             {/each}
-          </tbody>
+          {/if}
+        </DataTable>
 
-        </table>
-      </div>
-<div class="flex items-center justify-between pt-4 text-sm text-slate-400">
-  <span>
-    Page {page} of {Math.ceil(total / pageSize)}
-  </span>
+        <div class="flex items-center justify-between pt-4 text-sm text-slate-400">
+          <span>
+            Page {page} of {totalPages || 1}
+          </span>
 
-  <div class="flex gap-2">
-    <button
-      class="px-3 py-1 rounded bg-slate-800 disabled:opacity-40"
-      disabled={page === 1}
-      on:click={() => {
-        page--;
-        loadTransactions();
-      }}
-    >
-      Previous
-    </button>
-
-    <button
-      class="px-3 py-1 rounded bg-slate-800 disabled:opacity-40"
-      disabled={page * pageSize >= total}
-      on:click={() => {
-        page++;
-        loadTransactions();
-      }}
-    >
-      Next
-    </button>
-  </div>
-</div>
-
+          <div class="flex gap-2">
+            <Button
+              variant="secondary"
+              size="xs"
+              disabled={page === 1}
+              on:click={() => {
+                page--;
+                loadTransactions();
+              }}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="secondary"
+              size="xs"
+              disabled={page * pageSize >= total}
+              on:click={() => {
+                page++;
+                loadTransactions();
+              }}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      </Panel>
     </div>
   </div>
 </section>

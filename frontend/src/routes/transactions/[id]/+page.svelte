@@ -1,5 +1,11 @@
 <script lang="ts">
   import { page } from "$app/stores";
+  import { goto } from "$app/navigation";
+  import SectionHeader from "$lib/ui/SectionHeader.svelte";
+  import Panel from "$lib/ui/Panel.svelte";
+  import Badge from "$lib/ui/Badge.svelte";
+  import Button from "$lib/ui/Button.svelte";
+  import { fetchTransactionById } from "$lib/api/transactions";
 
 type ShapValue = {
   feature: string;
@@ -24,48 +30,30 @@ type TransactionDetail = {
   let error: string | null = null;
 
   let lastFetchedId: string | null = null;
+  let abort: AbortController | null = null;
 
-
-
-  function isUUID(id: string): boolean {
-    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-      id
-    );
-  }
-
-  // SAFE REACTIVE FETCH (GUARDED)
-  $: {
+  $: if ($page.params.id && $page.params.id !== lastFetchedId) {
     const id = $page.params.id;
+    lastFetchedId = id;
 
-    if (!id || id === lastFetchedId) {
-      // do nothing
-    } else if (!isUUID(id)) {
-      error = "Invalid transaction id";
-      transaction = null;
-      loading = false;
-      lastFetchedId = id;
-    } else {
-      lastFetchedId = id;
-      loading = true;
-      error = null;
-      transaction = null;
+    abort?.abort();
+    abort = new AbortController();
 
-        const API = import.meta.env.VITE_API_BASE_URL;
-        fetch(`${API}/api/transactions/${id}`)
-        .then((res) => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then((data) => {
-          transaction = data;
-        })
-        .catch(() => {
-          error = "Unable to load transaction details";
-        })
-        .finally(() => {
-          loading = false;
-        });
-    }
+    loading = true;
+    error = null;
+    transaction = null;
+
+    fetchTransactionById(id, abort.signal)
+      .then((data) => {
+        transaction = data as any;
+      })
+      .catch((e) => {
+        if (e?.name === "AbortError") return;
+        error = "Unable to load transaction details";
+      })
+      .finally(() => {
+        if (!abort?.signal.aborted) loading = false;
+      });
   }
 
   function sortedShap(values: ShapValue[]) {
@@ -100,27 +88,27 @@ function shapSummary(shapValues: ShapValue[]) {
 </script>
 
 <section class="min-h-screen bg-slate-950 p-4 text-slate-100">
-  <div class="min-h-[calc(100vh-2rem)] rounded-2xl bg-slate-900/95 p-6">
-
-    <header class="flex items-center justify-between mb-6">
-      <div>
-        <h1 class="text-2xl font-semibold">Transaction Review</h1>
-        <p class="text-sm text-slate-400">
-          Detailed risk assessment and model signals
-        </p>
-      </div>
-
-      {#if transaction}
-        <div class="flex gap-2">
-          <button class="px-4 py-1.5 text-xs rounded bg-emerald-600 text-white">
-            Approve
-          </button>
-          <button class="px-4 py-1.5 text-xs rounded bg-rose-600 text-white">
-            Escalate
-          </button>
-        </div>
-      {/if}
-    </header>
+  <div class="min-h-[calc(100vh-2rem)] rounded-2xl bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 ring-1 ring-white/5 shadow-2xl">
+    <div class="p-6 space-y-6">
+      <SectionHeader
+        eyebrow="Investigate"
+        title="Transaction review"
+        subtitle="Detailed risk assessment, model signals, and explanation for an analyst decision."
+      >
+        <svelte:fragment slot="actions">
+          <Button variant="ghost" size="sm" on:click={() => goto("/transactions")}>
+            Back
+          </Button>
+          {#if transaction}
+            <Button variant="primary" size="sm" disabled>
+              Approve
+            </Button>
+            <Button variant="secondary" size="sm" disabled>
+              Escalate
+            </Button>
+          {/if}
+        </svelte:fragment>
+      </SectionHeader>
 
     {#if loading}
       <p class="text-slate-400">Loading transaction…</p>
@@ -129,94 +117,100 @@ function shapSummary(shapValues: ShapValue[]) {
       <p class="text-rose-400">{error}</p>
 
     {:else if transaction}
-      <div class="grid grid-cols-4 gap-4 mb-6">
-        <div class="bg-slate-800 p-4 rounded">
-          <p class="text-xs text-slate-400">Transaction ID</p>
-          <p class="font-mono text-sm">{transaction.id}</p>
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <Panel padding="md" subtle>
+          <p class="text-xs text-slate-400 uppercase tracking-wide">Transaction</p>
+          <p class="mt-2 font-mono text-xs text-slate-200 break-all">{transaction.id}</p>
+        </Panel>
 
-        <div class="bg-slate-800 p-4 rounded">
-          <p class="text-xs text-slate-400">User</p>
-          <p>{transaction.user_id}</p>
-        </div>
+        <Panel padding="md" subtle>
+          <p class="text-xs text-slate-400 uppercase tracking-wide">User</p>
+          <p class="mt-2 text-sm text-slate-200">{transaction.user_id}</p>
+        </Panel>
 
-        <div class="bg-slate-800 p-4 rounded">
-          <p class="text-xs text-slate-400">Amount</p>
-          <p class="text-xl font-semibold">
+        <Panel padding="md" subtle>
+          <p class="text-xs text-slate-400 uppercase tracking-wide">Amount</p>
+          <p class="mt-2 text-xl font-semibold text-slate-50 tabular-nums">
             ${transaction.amount.toFixed(2)}
           </p>
-        </div>
+        </Panel>
 
-        <div class="bg-slate-800 p-4 rounded">
-          <p class="text-xs text-slate-400">Decision</p>
-          <p>{transaction.decision}</p>
-        </div>
+        <Panel padding="md" subtle>
+          <p class="text-xs text-slate-400 uppercase tracking-wide">Decision</p>
+          <div class="mt-2">
+            <Badge
+              tone={transaction.decision === "BLOCK" ? "danger" : transaction.decision === "REVIEW" ? "warning" : "success"}
+              size="sm"
+            >
+              {transaction.decision}
+            </Badge>
+          </div>
+        </Panel>
       </div>
     {/if}
 
-
     {#if transaction}
-  <div class="mb-6 bg-slate-800 p-4 rounded">
-    <div class="flex justify-between items-center">
-      <span class="text-sm text-slate-300">
-        Fraud Probability
-      </span>
+      <Panel padding="lg">
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-slate-300">
+            Fraud probability
+          </span>
+          <span class="text-lg font-semibold text-slate-50 tabular-nums">
+            {(transaction.fraud_prob * 100).toFixed(2)}%
+          </span>
+        </div>
 
-      <span class="text-lg font-semibold text-white">
-        {(transaction.fraud_prob * 100).toFixed(2)}%
-      </span>
-    </div>
-
-    <div class="mt-2 h-2 w-full bg-slate-700 rounded overflow-hidden">
-      <div
-        class="h-full bg-rose-500"
-        style={`width: ${Math.min(
-          transaction.fraud_prob * 100,
-          100
-        )}%`}
-      ></div>
-    </div>
-  </div>
-{/if}
+        <div class="mt-3 h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+          <div
+            class="h-full bg-gradient-to-r from-rose-400 via-rose-500 to-fuchsia-500 rounded-full"
+            style={`width: ${Math.min(transaction.fraud_prob * 100, 100)}%`}
+          ></div>
+        </div>
+      </Panel>
+    {/if}
 
 
     {#if transaction && transaction.shap_values?.length}
-  <div class="mt-6 bg-slate-800 rounded p-4">
-    <p class="text-xs text-slate-400 uppercase mb-3">
-      Model Explanation (SHAP)
-    </p>
-
-    <div class="space-y-3">
-      {#each sortedShap(transaction.shap_values).slice(0, 8) as shap}
-        <div>
-          <div class="flex justify-between text-sm mb-1">
-            <span class="font-mono text-slate-300">
-              {shap.feature}
-            </span>
-            <span class={`font-mono ${shapColor(shap.contribution)}`}>
-              {shap.contribution > 0 ? "+" : ""}
-              {shap.contribution.toFixed(4)}
-            </span>
-          </div>
-
-          <div class="w-full h-2 bg-slate-700 rounded overflow-hidden">
-            <div
-              class={`h-full ${shapBarColor(shap.contribution)}`}
-              style={`width: ${Math.min(
-                Math.abs(shap.contribution) * 100,
-                100
-              )}%`}
-            ></div>
+      <Panel padding="lg">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <div>
+            <p class="text-xs text-slate-400 uppercase tracking-wide">
+              Model explanation (SHAP)
+            </p>
+            <p class="text-xs text-slate-500">
+              Top contributing features for this decision.
+            </p>
           </div>
         </div>
-      {/each}
-    </div>
 
-    <p class="mt-3 text-xs text-slate-400">
-      Positive values increase fraud risk · Negative values reduce risk
-    </p>
-  </div>
-{/if}
+        <div class="space-y-3">
+          {#each sortedShap(transaction.shap_values).slice(0, 8) as shap}
+            <div>
+              <div class="flex justify-between text-sm mb-1">
+                <span class="font-mono text-slate-300">
+                  {shap.feature}
+                </span>
+                <span class={`font-mono ${shapColor(shap.contribution)}`}>
+                  {shap.contribution > 0 ? "+" : ""}
+                  {shap.contribution.toFixed(4)}
+                </span>
+              </div>
+
+              <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div
+                  class={`h-full ${shapBarColor(shap.contribution)} rounded-full`}
+                  style={`width: ${Math.min(Math.abs(shap.contribution) * 100, 100)}%`}
+                ></div>
+              </div>
+            </div>
+          {/each}
+        </div>
+
+        <p class="mt-3 text-xs text-slate-400">
+          Positive values increase fraud risk · Negative values reduce risk
+        </p>
+      </Panel>
+    {/if}
 
 
 {#if transaction && transaction.shap_values?.length}
@@ -227,7 +221,6 @@ function shapSummary(shapValues: ShapValue[]) {
     </span>
   </p>
 {/if}
-
-
-  </div>
+    </div>
+    </div>
 </section>

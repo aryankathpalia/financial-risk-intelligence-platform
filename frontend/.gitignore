@@ -1,25 +1,46 @@
-# Node
-node_modules/
-npm-debug.log*
+# ===== GLOBAL =====
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
 
-# Env files
+# ===== ENV =====
 .env
 .env.*
 
-# Build outputs
-.svelte-kit/
-.build/
-dist/
-
-# Python
+# ===== PYTHON =====
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 venv/
 
-# Data (your ML datasets)
-backend/app/data/
+# ===== NODE =====
+node_modules/
+.svelte-kit/
+dist/
+build/
 
+# ===== FRONTEND (if inside folder) =====
+frontend/node_modules/
+frontend/.svelte-kit/
+frontend/build/
 
-# ML datasets (DO NOT COMMIT)
-backend/app/data/ieee/
+# ===== ML / DATA (DO NOT COMMIT) =====
 *.csv
+*.pkl
+*.json
+
+backend/app/data/
+backend/data_raw/
+
+backend/app/ml/artifacts/
+backend/app/ml/offline/outputs/
+
+# ===== ALLOW IMPORTANT FILES =====
+!backend/app/data/__init__.py
+!backend/app/data/*.py
+!backend/app/data/loaders/
+
+# Allow ONLY safe small configs
+!backend/app/ml/offline/ieee_offline_metrics.json

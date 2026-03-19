@@ -12,6 +12,7 @@ export interface Alert {
   created_at: string;
   anomaly_score: number | null;
   reasons: string[]; 
+  risk_score:number
 }
 
 export type AnalystDecision = "APPROVE" | "CONFIRM_FRAUD";
