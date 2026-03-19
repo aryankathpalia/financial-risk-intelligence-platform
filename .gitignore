@@ -1,44 +1,8 @@
-# Python
-venv/
-__pycache__/
-*.pyc
-.env
-
-# Node / Svelte
-frontend/node_modules/
-frontend/.svelte-kit/
-frontend/build/
-
-# Editor
-.vscode/
-
-# OS
-.DS_Store
-Thumbs.db
-
-
-# ML artifacts & data (DO NOT COMMIT)
-backend/app/ml/artifacts/
-backend/app/ml/offline/outputs/
-
-*.csv
-*.json
-
-# Python
-venv/
-__pycache__/
-.env
-
-# Node
-frontend/node_modules/
-frontend/.svelte-kit/
-frontend/build/
-
-
 # ===== GLOBAL =====
 .DS_Store
-.vscode/
+Thumbs.db
 *.log
+.vscode/
 
 # ===== ENV =====
 .env
@@ -50,44 +14,33 @@ __pycache__/
 *.pyo
 *.pyd
 venv/
-.env/
 
 # ===== NODE =====
 node_modules/
 .svelte-kit/
 dist/
+build/
+
+# ===== FRONTEND (if inside folder) =====
+frontend/node_modules/
+frontend/.svelte-kit/
+frontend/build/
 
 # ===== ML / DATA (DO NOT COMMIT) =====
-
-**/outputs/
-
-*.pkl
 *.csv
+*.pkl
+*.json
 
-# ===== OS =====
-Thumbs.db
+backend/app/data/
+backend/data_raw/
 
+backend/app/ml/artifacts/
+backend/app/ml/offline/outputs/
 
-# ===== DATA POLICY =====
-# Ignore raw & large datasets
-backend/app/data/raw/
-backend/app/data/synthetic_dataset/
-
-# Allow loaders & code
+# ===== ALLOW IMPORTANT FILES =====
 !backend/app/data/__init__.py
 !backend/app/data/*.py
-!backend/app/data/ieee_loader.py
 !backend/app/data/loaders/
-!backend/app/data/ieee/
 
-# Allow SMALL test CSVs only
-# NEVER commit IEEE raw CSVs (too large)
-backend/app/data/ieee/*.csv
-
-backend/app/ml/ieee/artifacts/features.joblib
-backend/app/ml/ieee/artifacts/logistic_model.joblib
-backend/app/ml/ieee/artifacts/scaler.joblib
-
-
-backend/data_raw/
+# Allow ONLY safe small configs
 !backend/app/ml/offline/ieee_offline_metrics.json
