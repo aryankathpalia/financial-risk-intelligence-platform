@@ -6,6 +6,7 @@
   import Badge from "$lib/ui/Badge.svelte";
   import Button from "$lib/ui/Button.svelte";
   import { fetchTransactionById } from "$lib/api/transactions";
+  import { resolveAlert } from "$lib/api/alerts";
 
 type ShapValue = {
   feature: string;
@@ -28,6 +29,8 @@ type TransactionDetail = {
   let transaction: TransactionDetail | null = null;
   let loading = false;
   let error: string | null = null;
+  let actionLoading = false;
+  let actionError: string | null = null;
 
   let lastFetchedId: string | null = null;
   let abort: AbortController | null = null;
@@ -84,6 +87,36 @@ function shapSummary(shapValues: ShapValue[]) {
   return `${top.feature} ${direction} fraud risk (${top.contribution > 0 ? "+" : ""}${top.contribution.toFixed(2)})`;
 }
 
+async function handleDecision(action: "approve" | "block") {
+  if (!transaction || actionLoading) return;
+
+  actionLoading = true;
+  actionError = null;
+
+  const previousDecision = transaction.decision;
+  const nextDecision = action === "approve" ? "ALLOW" : "BLOCK";
+
+  transaction = {
+    ...transaction,
+    decision: nextDecision
+  };
+
+  try {
+    await resolveAlert(
+      transaction.id,
+      action === "approve" ? "APPROVE" : "CONFIRM_FRAUD"
+    );
+  } catch {
+    transaction = {
+      ...transaction,
+      decision: previousDecision
+    };
+    actionError = "Unable to update decision right now. Please try again.";
+  } finally {
+    actionLoading = false;
+  }
+}
+
 
 </script>
 
@@ -100,15 +133,29 @@ function shapSummary(shapValues: ShapValue[]) {
             Back
           </Button>
           {#if transaction}
-            <Button variant="primary" size="sm" disabled>
-              Approve
+            <Button
+              variant="primary"
+              size="sm"
+              disabled={actionLoading || transaction.decision === "ALLOW"}
+              on:click={() => handleDecision("approve")}
+            >
+              {actionLoading ? "Updating…" : "Approve"}
             </Button>
-            <Button variant="secondary" size="sm" disabled>
-              Escalate
+            <Button
+              variant="secondary"
+              size="sm"
+              disabled={actionLoading || transaction.decision === "BLOCK"}
+              on:click={() => handleDecision("block")}
+            >
+              {actionLoading ? "Updating…" : "Block"}
             </Button>
           {/if}
         </svelte:fragment>
       </SectionHeader>
+
+    {#if actionError}
+      <p class="text-sm text-rose-400">{actionError}</p>
+    {/if}
 
     {#if loading}
       <p class="text-slate-400">Loading transaction…</p>
