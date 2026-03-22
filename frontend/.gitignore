@@ -44,3 +44,6 @@ backend/app/ml/offline/outputs/
 
 # Allow ONLY safe small configs
 !backend/app/ml/offline/ieee_offline_metrics.json
+
+
+.vercel
