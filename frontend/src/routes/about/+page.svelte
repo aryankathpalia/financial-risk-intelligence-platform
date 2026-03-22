@@ -23,7 +23,11 @@
     BadgeAlert,
     CircleGauge,
     BellRing,
-    UserRoundCheck
+    UserRoundCheck,
+    Target,
+    BarChart3,
+    GitBranch,
+    Layers
   } from "lucide-svelte";
 
   Chart.register(
@@ -82,30 +86,32 @@
 
   const coreCapabilities = [
     {
+      icon: Target,
       title: "High-recall fraud detection",
       description:
-        "Model tuning prioritizes recall so high-risk transactions are detected early while operations stay manageable.",
-      className:
-        "md:col-span-2 border-sky-500/30 bg-gradient-to-br from-[#0b1220]/90 to-[#1a2240]/70 shadow-[0_10px_28px_rgba(56,189,248,0.15)]"
+        "Model tuning prioritizes recall so high-risk transactions are caught early while keeping operations manageable.",
+      highlighted: true
     },
     {
+      icon: BarChart3,
       title: "Validation-backed model quality",
       description:
-        "Performance tracks around ROC-AUC 0.98 with stable false positive control around 1.2%.",
-      className: "border-indigo-500/25 bg-gradient-to-br from-slate-900/85 to-indigo-950/35"
+        "Tracks around ROC-AUC 0.98 with stable false positive control near 1.2%.",
+      highlighted: false
     },
     {
+      icon: GitBranch,
       title: "Operational decision flow",
       description:
-        "Alerts, risk evidence, and analyst actions are connected in one workflow for consistent outcomes.",
-      className: "border-slate-700/70 bg-slate-900/75"
+        "Alerts, risk evidence, and analyst actions connect in one workflow for consistent outcomes.",
+      highlighted: false
     },
     {
+      icon: Layers,
       title: "Production-ready scoring stack",
       description:
-        "From dataset ingestion to scoring APIs and dashboard monitoring, the platform is designed like a real production analytics product.",
-      className:
-        "md:col-span-3 border-slate-700/70 bg-gradient-to-br from-slate-900/85 via-slate-900/80 to-sky-950/20"
+        "From dataset ingestion to scoring APIs and dashboard monitoring, built like a real production product.",
+      highlighted: false
     }
   ] as const;
 
@@ -354,11 +360,14 @@
         <p class="mt-2 text-sm text-slate-400 max-w-2xl">Deeper platform value for production fraud operations.</p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
         {#each coreCapabilities as capability}
-          <article class={`rounded-2xl border p-5 backdrop-blur-sm transition duration-300 hover:scale-[1.02] hover:border-sky-500/35 hover:shadow-[0_10px_26px_rgba(56,189,248,0.14)] ${capability.className}`}>
-            <h3 class="text-lg font-semibold text-slate-100">{capability.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-slate-300 max-w-xl">{capability.description}</p>
+          <article class={`flex flex-col rounded-2xl border p-5 backdrop-blur-sm transition duration-300 hover:scale-[1.02] hover:shadow-[0_10px_26px_rgba(56,189,248,0.14)] ${capability.highlighted ? 'border-sky-500/40 bg-gradient-to-br from-[#0b1220]/90 to-[#1a2240]/70 shadow-[0_10px_28px_rgba(56,189,248,0.15)] hover:border-sky-400/55' : 'border-slate-700/70 bg-slate-900/75 hover:border-sky-500/35'}`}>
+            <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-700/70 bg-slate-900/80 text-sky-300 mb-3 shrink-0">
+              <svelte:component this={capability.icon} size={18} strokeWidth={1.9} aria-hidden="true" />
+            </span>
+            <h3 class="text-base font-semibold text-slate-100">{capability.title}</h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-slate-300">{capability.description}</p>
           </article>
         {/each}
       </div>
@@ -373,24 +382,41 @@
         <Badge tone="neutral" size="sm">System overview</Badge>
       </div>
 
-      <div class="grid grid-cols-1 xl:grid-cols-5 gap-4">
-        <div class="xl:col-span-3 rounded-2xl border border-sky-500/25 bg-gradient-to-br from-slate-950/80 to-slate-900/55 p-4 shadow-[0_10px_30px_rgba(56,189,248,0.12)] relative overflow-hidden">
+      <div class="grid grid-cols-1 xl:grid-cols-5 gap-4 items-stretch">
+        <div class="xl:col-span-3 rounded-2xl border border-sky-500/25 bg-gradient-to-br from-slate-950/80 to-slate-900/55 p-4 shadow-[0_10px_30px_rgba(56,189,248,0.12)] relative overflow-hidden flex flex-col justify-between">
           <span class="pointer-events-none absolute -top-14 -right-8 h-40 w-40 rounded-full bg-sky-500/15 blur-3xl"></span>
-          <div class="flex items-center justify-between">
-            <p class="text-xs uppercase tracking-[0.14em] text-slate-500">Recent activity</p>
-            <span class="text-xs text-slate-300">Live simulation</span>
+          <div class="flex flex-col flex-1">
+            <div class="flex items-center justify-between">
+              <p class="text-xs uppercase tracking-[0.14em] text-slate-500">Recent activity</p>
+              <span class="text-xs text-slate-300">Live simulation</span>
+            </div>
+
+            <p class="mt-2 text-xs text-slate-400">Live Transaction Activity (Simulated)</p>
+
+            <div class="mt-3 rounded-xl border border-slate-800/70 bg-slate-950/70 p-3 flex-1 min-h-[12rem]">
+              <canvas bind:this={activityCanvas} class="h-full w-full"></canvas>
+            </div>
           </div>
 
-          <p class="mt-2 text-xs text-slate-400">Live Transaction Activity (Simulated)</p>
-
-          <div class="mt-3 rounded-xl border border-slate-800/70 bg-slate-950/70 p-3 h-44 sm:h-48">
-            <canvas bind:this={activityCanvas} class="h-full w-full"></canvas>
+          <div class="mt-4 grid grid-cols-3 gap-3 border-t border-slate-800/70 pt-3 shrink-0">
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.12em] text-slate-500">Avg txn/min</p>
+              <p class="mt-0.5 text-sm font-semibold text-slate-200">293</p>
+            </div>
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.12em] text-slate-500">Peak spike</p>
+              <p class="mt-0.5 text-sm font-semibold text-sky-300">420</p>
+            </div>
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.12em] text-slate-500">Volatility</p>
+              <p class="mt-0.5 text-sm font-semibold text-amber-300">Medium</p>
+            </div>
           </div>
         </div>
 
-        <div class="xl:col-span-2 grid grid-cols-1 gap-3">
+        <div class="xl:col-span-2 flex flex-col gap-3">
           {#each overviewMetrics as metric, index}
-            <div class={`rounded-xl border px-4 py-3 transition duration-300 hover:scale-[1.02]
+            <div class={`rounded-xl border px-4 py-3 transition duration-300 hover:scale-[1.02] flex-1
               ${
                 index === 0
                   ? 'border-sky-500/30 bg-gradient-to-br from-slate-950/70 to-sky-950/30 hover:shadow-[0_8px_20px_rgba(56,189,248,0.16)]'

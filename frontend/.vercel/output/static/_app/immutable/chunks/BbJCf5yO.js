@@ -1,0 +1,1 @@
+import{a as r}from"./BUKRYi8q.js";function s(){return r("/api/alerts")}function i(e,t,a){return r(`/api/alerts/${e}/resolve`,{method:"POST",body:JSON.stringify({decision:t,reason:a})})}export{s as f,i as r};
