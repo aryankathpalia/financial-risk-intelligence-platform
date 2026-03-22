@@ -1,0 +1,6 @@
+import{f as d,a as g}from"./bJXSFGz4.js";import"./CeixjShr.js";import{e as m,r as p,t as b}from"./w0yp7K8b.js";import{f as u,a as c,s as v}from"./0jQvaKHe.js";import{l as i,p as a}from"./iqCvf8MM.js";var y=d("<section><!></section>");function B(n,e){const s=i(e,["children","$$slots","$$events","$$legacy"]),l=i(s,["padding","subtle","class"]);let t=a(e,"padding",8,"md"),o=a(e,"subtle",8,!1),x=a(e,"class",8,"");var r=y();u(r,()=>({...l,class:`rounded-xl border border-slate-800/60 bg-slate-900/90 shadow-sm
+    ${t()==="sm"?"px-4 py-3":t()==="lg"?"px-6 py-6":"px-5 py-5"}
+    ${o()?"bg-slate-900/80 border-slate-800/60 shadow-none":""}
+    ${x()}`}));var f=m(r);c(f,e,"default",{}),p(r),g(n,r)}var _=d("<span><!></span>");function N(n,e){let s=a(e,"tone",8,"neutral"),l=a(e,"size",8,"xs");var t=_(),o=m(t);c(o,e,"default",{}),p(t),b(()=>v(t,1,`inline-flex items-center rounded-full font-medium
+    ${l()==="xs"?"px-2 py-0.5 text-[11px] leading-[14px]":"px-2.5 py-0.5 text-xs leading-[16px]"}
+    ${s()==="success"?"bg-emerald-500/10 text-emerald-400 ring-1 ring-emerald-500/30":s()==="warning"?"bg-amber-500/10 text-amber-300 ring-1 ring-amber-500/30":s()==="danger"?"bg-rose-500/10 text-rose-300 ring-1 ring-rose-500/35":"bg-slate-800 text-slate-300 ring-1 ring-slate-600/70"}`)),g(n,t)}export{N as B,B as P};
