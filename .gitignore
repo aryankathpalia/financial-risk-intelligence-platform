@@ -25,6 +25,7 @@ build/
 frontend/node_modules/
 frontend/.svelte-kit/
 frontend/build/
+frontend/.vercel/
 
 # ===== ML / DATA (DO NOT COMMIT) =====
 *.csv
