@@ -45,7 +45,9 @@
 
       {#if collapsed}
         <!-- COLLAPSED: LOGO ONLY -->
-        <div
+        <button
+          type="button"
+          aria-label="Expand sidebar"
           class="w-full flex justify-center cursor-pointer"
           on:click={toggleSidebar}
         >
@@ -54,7 +56,7 @@
             alt="RiskIntel"
             class="h-9 w-auto"
           />
-        </div>
+        </button>
       {:else}
         <!-- EXPANDED -->
         <div class="flex items-center justify-between w-full">
@@ -78,6 +80,8 @@
 
           <!-- HAMBURGER -->
           <button
+            type="button"
+            aria-label="Collapse sidebar"
             on:click={toggleSidebar}
             class="flex items-center justify-center h-8 w-8 rounded-md border border-slate-700/80 bg-slate-900/80 text-slate-400 hover:text-white hover:border-slate-500 transition shrink-0"
           >
